@@ -1,0 +1,12 @@
+Source: ros-humble-flexbe-behavior-engine
+Section: misc
+Priority: optional
+Maintainer: Philipp Schillinger <philsplus@gmail.com>
+Build-Depends: debhelper (>= 9.0.0), ros-humble-ament-cmake, ros-humble-flexbe-core, ros-humble-flexbe-input, ros-humble-flexbe-mirror, ros-humble-flexbe-msgs, ros-humble-flexbe-onboard, ros-humble-flexbe-states, ros-humble-flexbe-testing, ros-humble-flexbe-widget, ros-humble-ros-workspace
+Homepage: http://ros.org/wiki/flexbe
+Standards-Version: 3.9.2
+
+Package: ros-humble-flexbe-behavior-engine
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ros-humble-flexbe-core, ros-humble-flexbe-input, ros-humble-flexbe-mirror, ros-humble-flexbe-msgs, ros-humble-flexbe-onboard, ros-humble-flexbe-states, ros-humble-flexbe-testing, ros-humble-flexbe-widget, ros-humble-ros-workspace
+Description: A meta-package to aggregate all the FlexBE packages
