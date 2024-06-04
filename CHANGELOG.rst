@@ -1,9 +1,16 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_testing
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+2.3.5 (2024-05-31)
+------------------
+* update change log
+
+2.3.4 (2024-05-01)
+------------------
+
 2.3.3 (2023-08-09)
 ------------------
-* update for change in yaml loading for Iron messages
 * subscriber state test still not functional
 
 2.3.2 (2023-08-01)
