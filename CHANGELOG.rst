@@ -1,9 +1,23 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_core
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+2.3.5 (2024-05-31)
+------------------
+* Add parsing check to handle exceptions in manifest
+* update change log
+
+
+2.3.4 (2024-05-01)
+------------------
+* proxy action client: remove result_status and test proxy status
+* Fixed bug when trying to get result state/GoalStatus.
+* Add throttle option for logging (PR #14)
+
 2.3.3 (2023-08-09)
 ------------------
 * destroy sub/pub/client in executor thread
+* update to protect against executor calls after unsubscribe/shutdown
 * use SingleThreadedExecutor without callback groups
 * use basic pub/sub for onboard; cleanup
 

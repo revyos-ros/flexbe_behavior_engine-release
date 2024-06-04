@@ -1,4 +1,4 @@
-# Copyright 2023 Philipp Schillinger, Team ViGIR, Christopher Newport University
+# Copyright 2024 Philipp Schillinger, Team ViGIR, Christopher Newport University
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -46,6 +46,7 @@ class ProxyActionClient:
     _cancel_current_goal = {}
 
     _result = {}
+    _result_status = {}
     _feedback = {}
 
     @staticmethod
@@ -68,11 +69,11 @@ class ProxyActionClient:
 
             print("Shutdown proxy action clients  ...")
             ProxyActionClient._result.clear()
+            ProxyActionClient._result_status.clear()
             ProxyActionClient._feedback.clear()
             ProxyActionClient._cancel_current_goal.clear()
             ProxyActionClient._has_active_goal.clear()
             ProxyActionClient._current_goal.clear()
-            ProxyActionClient._node = None
         except Exception as exc:  # pylint: disable=W0703
             print(f'Something went wrong during shutdown of proxy action clients!\n{ str(exc)}')
 
@@ -142,6 +143,7 @@ class ProxyActionClient:
             raise ValueError(f'Cannot send goal for action client {topic}: Topic not available.')
         # reset previous results
         ProxyActionClient._result[topic] = None
+        ProxyActionClient._result_status[topic] = None
         ProxyActionClient._feedback[topic] = None
         ProxyActionClient._cancel_current_goal[topic] = False
         ProxyActionClient._has_active_goal[topic] = True
@@ -182,7 +184,9 @@ class ProxyActionClient:
     @classmethod
     def _result_callback(cls, future, topic):
         result = future.result().result
+        result_status = future.result().status
         ProxyActionClient._result[topic] = result
+        ProxyActionClient._result_status[topic] = result_status
         ProxyActionClient._has_active_goal[topic] = False
 
     @classmethod
@@ -227,12 +231,13 @@ class ProxyActionClient:
     @classmethod
     def remove_result(cls, topic):
         """
-        Remove the latest result message of the given action call.
+        Remove the latest results of the given action call.
 
         @type topic: string
         @param topic: The topic of interest.
         """
         ProxyActionClient._result[topic] = None
+        ProxyActionClient._result_status[topic] = None
 
     @classmethod
     def has_feedback(cls, topic):
@@ -274,7 +279,7 @@ class ProxyActionClient:
         @type topic: string
         @param topic: The topic of interest.
         """
-        return ProxyActionClient._clients[topic].get_state()
+        return ProxyActionClient._result_status.get(topic)
 
     @classmethod
     def is_active(cls, topic):
