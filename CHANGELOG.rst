@@ -1,6 +1,16 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+2.3.5 (2024-05-31)
+------------------
+* remove unnecessary entry points (#15)
+* update change log
+
+2.3.4 (2024-05-01)
+------------------
+* update to protect against executor calls after unsubscribe/shutdown
+
 2.3.3 (2023-08-09)
 ------------------
 * streamline pub/sub for mirror

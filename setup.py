@@ -7,7 +7,7 @@ PACKAGE_NAME = 'flexbe_mirror'
 
 setup(
     name=PACKAGE_NAME,
-    version='2.3.3',
+    version='2.3.5',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + PACKAGE_NAME]),
@@ -22,8 +22,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'flexbe_mirror = flexbe_mirror.flexbe_mirror',
-            'mirror_state = flexbe_mirror.mirror_state',
             'behavior_mirror_sm = flexbe_mirror.behavior_mirror_sm:main'
         ],
     },
