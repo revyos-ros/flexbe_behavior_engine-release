@@ -1,6 +1,16 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_widget
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+2.3.5 (2024-05-31)
+------------------
+* use onboard heartbeat to trigger launcher
+* add command line argument to allow quicker startup
+* clean up tabs in subscriber state
+
+2.3.4 (2024-05-01)
+------------------
+
 2.3.3 (2023-08-09)
 ------------------
 
