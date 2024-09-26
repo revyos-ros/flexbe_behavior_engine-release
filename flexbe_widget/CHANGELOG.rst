@@ -1,12 +1,25 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_widget
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-2.3.5 (2024-05-31)
+3.0.3 (2024-06-06)
 ------------------
-* use onboard heartbeat to trigger launcher
-* add command line argument to allow quicker startup
-* clean up tabs in subscriber state
+
+3.0.2 (2024-06-04)
+------------------
+* flake8/pycodestyle cleanup
+
+3.0.1 (2024-05-31)
+------------------
+* add argument to allow auto launching behavior based on initial heartbeat message (instead of READY signal published every 10 seconds)
+* use onboard heartbeat to trigger launcher; clean up tabs in subscriber state; tweak UI message
+
+3.0.0 (2024-05-01)
+------------------
+* update with state map and changes to concurrent handling
+* allow removing action clients and service callers
+* flake 8 cleanup
+* fix CONSTANT style across flexbe_behavior_engine
+* use SingleThreadedExecutor
 
 2.3.4 (2024-05-01)
 ------------------

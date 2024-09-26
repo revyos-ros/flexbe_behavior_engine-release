@@ -11,9 +11,11 @@ The user interface features a runtime control interface as well as a graphical e
 
 Please refer to the FlexBE Homepage ([flexbe.github.io](http://flexbe.github.io)) for further information, tutorials, application examples, and much more.
 
-![FlexBE CI](https://github.com/FlexBE/flexbe_behavior_engine/workflows/FlexBE%20CI/badge.svg?branch=humble)
+You may also want to check out the quick start tutorial demonstrations at [FlexBE Turtlesim Demo](https://github.com/FlexBE/flexbe_turtlesim_demo).
 
-Humble ![ROS Build Farm](https://build.ros2.org/job/Hdev__flexbe_behavior_engine__ubuntu_jammy_amd64/badge/icon)
+![FlexBE CI](https://github.com/FlexBE/flexbe_behavior_engine/workflows/FlexBE%20CI/badge.svg?branch=jazzy)
+
+Jazzy ![ROS Build Farm](https://build.ros2.org/job/Jdev__flexbe_behavior_engine__ubuntu_noble_amd64/badge/icon)
 
 ## Installation
 
@@ -32,7 +34,12 @@ Furthermore, create your own repository for behavior development (contains examp
 
     ros2 run flexbe_widget create_repo [your_project_name]
 
-Finally, it is recommended to install the FlexBE App user interface by following [these steps](https://github.com/FlexBE/flexbe_app.git).
+This version of the flexbe_behavior_engine requires version 4.0+ of the FlexBE user interface.
+
+It is recommended to install the FlexBE user interface by following one of these steps:
+ * https://github.com/FlexBE/flexbe_app.git - classic FlexBE App (iron or ros2-devel branches)
+ * https://github.com/FlexBE/flexbe_webui.git - new Python-based webserver version
+
 
 ## Usage
 
@@ -40,13 +47,15 @@ Use the following launch file for running the onboard engine:
 
     ros2 launch flexbe_onboard behavior_onboard.launch.py
 
-Use the following launch file for running the operator control station (requires the FlexBE App):
+Use the following launch file for running the operator control station (requires the FlexBE App or WebUI):
 
-    ros2 launch flexbe_app flexbe_ocs.launch.py
+    ros2 launch flexbe_webui flexbe_ocs.launch.py
+
+ > Note: replace `flexbe_webui` with `flexbe_app` to run the "classic" UI (after `ros2 run flexbe_app nwjs_install`).
 
 Use the following launch file to run both of the above, e.g., for testing on a single computer:
 
-    ros2 launch flexbe_app flexbe_full.launch.py
+    ros2 launch flexbe_webui flexbe_full.launch.py
 
 For running tests use:
 `colcon test --ctest-args --packages-select <flexbe_package>`

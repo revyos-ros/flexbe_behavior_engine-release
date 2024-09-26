@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright 2023 Philipp Schillinger, Team ViGIR, Christopher Newport University
+# Copyright 2024 Philipp Schillinger, Team ViGIR, Christopher Newport University
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -30,9 +30,10 @@
 
 
 """This defines the superclass for all implemented behaviors."""
-from flexbe_msgs.msg import BehaviorSync
-from flexbe_core.core import PreemptableState, OperatableStateMachine, LockableStateMachine
+from flexbe_core.core import LockableStateMachine, OperatableStateMachine, PreemptableState
 from flexbe_core.logger import Logger
+
+from flexbe_msgs.msg import BehaviorSync
 
 
 class Behavior:
@@ -41,7 +42,7 @@ class Behavior:
     def __init__(self):
         """Call this superclass constructor first when overriding it with your behavior."""
         self._state_machine = None
-        self.name = "unnamed behavior"
+        self.name = 'unnamed behavior'
         self.beh_id = 0  # Behavior id checksum assigned by processing the file contents
 
         self.contains = {}
@@ -181,6 +182,12 @@ class Behavior:
 
         self._state_machine.confirm(self.name, self.beh_id)
 
+    # def define_structure(self):
+    #     """
+    #     Calculate all state ids and prepare the ContainerStructure message
+    #     """
+    #     self._state_machine.define_structure()
+
     def execute(self):
         """
         Execute the behavior.
@@ -210,7 +217,7 @@ class Behavior:
         state._locked = True  # make sure the state cannot transition during preparations
         states = self._get_states_of_path(state.path, self._state_machine)
         if states is None:
-            raise RuntimeError("Did not find locked state in new behavior!")
+            raise RuntimeError('Did not find locked state in new behavior!')
         state_container = state._parent
         state_container.remove_state(state)  # remove from old state machine
         for sm in states[1:]:
@@ -220,20 +227,24 @@ class Behavior:
         states[1].replace_state(state)  # add to new state machine
         self.requested_state_path = state.path  # set start after switch
 
-    def get_current_state(self):
-        return self._state_machine.get_deep_state()
+    def get_current_states(self):
+        """Get all currently active (sub-)states."""
+        return self._state_machine.get_deep_states()
 
     def get_locked_state(self):
-        state = self._state_machine.get_deep_state()
-        while state is not None:
-            if state.is_locked():
-                return state
+        """Return the first state designated as locked."""
+        states = self._state_machine.get_deep_states()
+        for state in states:
+            while state is not None:
+                if state.is_locked():
+                    return state
 
-            state = state._parent
+                state = state._parent
         return None
 
     @classmethod
     def preempt(cls):
+        """Preempt behavior."""
         PreemptableState.preempt = True
 
     # For internal use only
@@ -244,7 +255,7 @@ class Behavior:
         return self._state_machine
 
     def _collect_contained(self, obj, path):
-        contain_list = {path + "/" + key: value for (key, value) in getattr(obj, 'contains', {}).items()}
+        contain_list = {path + '/' + key: value for (key, value) in getattr(obj, 'contains', {}).items()}
         add_to_list = {}
         for b_id, b_inst in contain_list.items():
             add_to_list.update(self._collect_contained(b_inst, b_id))
@@ -252,6 +263,7 @@ class Behavior:
         return contain_list
 
     def get_contained_behaviors(self):
+        """Get contained behaviors within this behavior."""
         return self._collect_contained(self, '')
 
     def _set_typed_attribute(self, name, value):
@@ -263,13 +275,14 @@ class Behavior:
             elif isinstance(attr, float):
                 value = float(value)
             elif isinstance(attr, bool):
-                value = (value != "0" and value.lower() != "false")
+                value = (value != '0' and value.lower() != 'false')
             elif isinstance(attr, dict):
                 import yaml  # pylint: disable=C0415
                 value = getattr(yaml, 'unsafe_load', yaml.load)(value)
         setattr(self, name, value)
 
     def set_up(self, beh_id, autonomy_level, debug):
+        """Set up the behavior."""
         self.beh_id = beh_id
         self._autonomy_level = autonomy_level
         self._debug = debug
@@ -279,7 +292,7 @@ class Behavior:
         if len(path_elements) < 2:
             return [container]  # actually a state in this case
         state_label = path_elements[1]
-        new_path = "/".join(path_elements[1:])
+        new_path = '/'.join(path_elements[1:])
         # collect along the path and append self
         if state_label in container:
             childlist = self._get_states_of_path(new_path, container[state_label])

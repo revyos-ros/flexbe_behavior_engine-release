@@ -2,13 +2,14 @@
 
 import os
 from glob import glob
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 package_name = 'flexbe_onboard'
 
 setup(
     name=package_name,
-    version='2.3.5',
+    version='3.0.3',
     packages=find_packages(),
     data_files=[
         (os.path.join('share', package_name), glob('launch/*.launch.py')),
@@ -17,9 +18,9 @@ setup(
         ('share/' + package_name, ['package.xml']),
         (os.path.join('share', package_name), glob('tests/*.py')),
         (os.path.join('share', package_name), glob('tests/flexbe_onboard_test_data/*.py')),
-        (os.path.join('share', package_name, "tests", "flexbe_onboard_test_data"),
+        (os.path.join('share', package_name, 'tests', 'flexbe_onboard_test_data'),
             glob('tests/flexbe_onboard_test_data/*.py')),  # No * here due to __pycache__ folder
-        (os.path.join('share', package_name, "tests", "flexbe_onboard_test_data"),
+        (os.path.join('share', package_name, 'tests', 'flexbe_onboard_test_data'),
             glob('tests/flexbe_onboard_test_data/*.xml')),
     ],
     install_requires=['setuptools'],

@@ -8,12 +8,12 @@ jobs:
   test:
     strategy:
       matrix:
-        ros: [humble]
+        ros: [jazzy]
         include:
-        - os: ubuntu-22.04
-          ros: humble
+        - os: ubuntu-24.04
+          ros: jazzy
           python: python3
-          ci_branch: humble
+          ci_branch: jazzy
 
     runs-on: ${{ matrix.os }}
     env:
@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Prepare CI
         run: |
           git clone -b $CI_BRANCH https://github.com/FlexBE/flexbe_ci.git ~/flexbe_ci

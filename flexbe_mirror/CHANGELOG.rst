@@ -1,15 +1,34 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_mirror
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-2.3.5 (2024-05-31)
+3.0.3 (2024-06-06)
 ------------------
+
+3.0.2 (2024-06-04)
+------------------
+* flake8/pycodestyle cleanup
+
+3.0.1 (2024-05-31)
+------------------
+* stop mirror thread on BEStatus FAILED or ERROR to reset current behavior id to prevent out of sync spam
 * remove unnecessary entry points (#15)
-* update change log
+
+3.0.0 (2024-05-01)
+------------------
+* update with state map and changes to concurrent handling
+* allow removing action clients and service callers
+* flake8, pep257 and codestyle checks
+* reinitialize existing state machine instead of rebuilding on sync (1000x faster)
+* fix CONSTANT style across flexbe_behavior_engine
+* update with standardized topic handling
+* update ui version handling; comment out some spam
+*  publish last active state on changes
+* update behavior for UI if internal concurrent returns
+* refactor mirror handling
+* adding state_id handling; pre-building ContainerStructure to set IDs
 
 2.3.4 (2024-05-01)
 ------------------
-* update to protect against executor calls after unsubscribe/shutdown
 
 2.3.3 (2023-08-09)
 ------------------

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright 2023 Philipp Schillinger, Team ViGIR, Christopher Newport University
+# Copyright 2024 Philipp Schillinger, Team ViGIR, Christopher Newport University
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -31,10 +31,11 @@
 
 """ManuallyTransitionableState."""
 
-from flexbe_msgs.msg import CommandFeedback, OutcomeRequest
-
 from flexbe_core.core.ros_state import RosState
+from flexbe_core.core.topics import Topics
 from flexbe_core.logger import Logger
+
+from flexbe_msgs.msg import CommandFeedback, OutcomeRequest
 
 
 class ManuallyTransitionableState(RosState):
@@ -45,40 +46,42 @@ class ManuallyTransitionableState(RosState):
     """
 
     def __init__(self, *args, **kwargs):
+        """Initialize ManuallyTransitionableState instance."""
         super().__init__(*args, **kwargs)
         self.__execute = self.execute
         self.execute = self._manually_transitionable_execute
 
         self._force_transition = False
         self._manual_transition_requested = None
-        self._feedback_topic = 'flexbe/command_feedback'
-        self._transition_topic = 'flexbe/command/transition'
 
     def _manually_transitionable_execute(self, *args, **kwargs):
         self._manual_transition_requested = None
-        if self._is_controlled and self._sub.has_buffered(self._transition_topic):
-            command_msg = self._sub.get_from_buffer(self._transition_topic)
-            self._pub.publish(self._feedback_topic, CommandFeedback(command="transition",
-                                                                    args=[command_msg.target, self.name]))
+        if self._is_controlled and self._sub.has_buffered(Topics._CMD_TRANSITION_TOPIC):
+            command_msg = self._sub.get_from_buffer(Topics._CMD_TRANSITION_TOPIC)
+            self._pub.publish(Topics._CMD_FEEDBACK_TOPIC,
+                              CommandFeedback(command='transition', args=[command_msg.target, self.name]))
             if command_msg.target != self.name:
-                Logger.logwarn("Requested outcome for state %s but active state is %s" %
+                Logger.logwarn("Requested outcome for state '%s' but active state is '%s'" %
                                (command_msg.target, self.name))
             else:
                 self._force_transition = True
                 outcome = self.outcomes[command_msg.outcome]
                 self._manual_transition_requested = outcome
-                Logger.localinfo("--> Manually triggered outcome %s of state %s" % (outcome, self.name))
+                Logger.localinfo("--> Manually triggered outcome '%s' of state '%s'" % (outcome, self.name))
                 return outcome
         # otherwise, return the normal outcome
         self._force_transition = False
         return self.__execute(*args, **kwargs)
 
     def _enable_ros_control(self):
-        super()._enable_ros_control()
-        self._pub.createPublisher(self._feedback_topic, CommandFeedback)
-        self._sub.subscribe(self._transition_topic, OutcomeRequest, inst_id=id(self))
-        self._sub.enable_buffer(self._transition_topic)
+        if not self._is_controlled:
+            super()._enable_ros_control()
+            self._pub.create_publisher(Topics._CMD_FEEDBACK_TOPIC, CommandFeedback)
+            self._sub.subscribe(Topics._CMD_TRANSITION_TOPIC, OutcomeRequest, inst_id=id(self))
+            self._sub.enable_buffer(Topics._CMD_TRANSITION_TOPIC)
 
     def _disable_ros_control(self):
-        super()._disable_ros_control()
-        self._sub.unsubscribe_topic(self._transition_topic, inst_id=id(self))
+        if self._is_controlled:
+            super()._disable_ros_control()
+            self._pub.remove_publisher(Topics._CMD_FEEDBACK_TOPIC)
+            self._sub.unsubscribe_topic(Topics._CMD_TRANSITION_TOPIC, inst_id=id(self))

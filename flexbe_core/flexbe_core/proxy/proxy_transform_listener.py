@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright 2023 Philipp Schillinger, Team ViGIR, Christopher Newport University
+# Copyright 2024 Philipp Schillinger, Team ViGIR, Christopher Newport University
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -31,8 +31,9 @@
 
 """Provide a single tf listener per node for all states that need tf operations."""
 
-import tf2_ros
 from flexbe_core.logger import Logger
+
+import tf2_ros
 
 
 class ProxyTransformListener:
@@ -52,9 +53,9 @@ class ProxyTransformListener:
     def shutdown():
         """Shut down this proxy by reseting the transform listener."""
         try:
-            print("Shutdown proxy transform listener  ...")
             ProxyTransformListener._listener = None
             ProxyTransformListener._buffer = None
+            print('Shutdown proxy transform listener - finished!')
         except Exception as exc:  # pylint: disable=W0703
             print(f'Something went wrong during shutdown of proxy transform listener  !\n{str(exc)}')
 

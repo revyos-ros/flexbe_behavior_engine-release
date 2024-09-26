@@ -1,12 +1,12 @@
 """Setup package for flexbe_core package."""
-from setuptools import setup
 from setuptools import find_packages
+from setuptools import setup
 
 PACKAGE_NAME = 'flexbe_core'
 
 setup(
     name=PACKAGE_NAME,
-    version='2.3.5',
+    version='3.0.3',
     packages=find_packages(exclude=['test']),
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + PACKAGE_NAME]),

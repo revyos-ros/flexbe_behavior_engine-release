@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright 2023 Philipp Schillinger, Team ViGIR, Christopher Newport University
+# Copyright 2024 Philipp Schillinger, Team ViGIR, Christopher Newport University
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -31,16 +31,15 @@
 
 """A state machine that can be preempted."""
 import threading
-import zlib
-
-import rclpy
-from std_msgs.msg import Empty
-from flexbe_msgs.msg import BehaviorSync
 
 from flexbe_core.core.lockable_state_machine import LockableStateMachine
 from flexbe_core.core.preemptable_state import PreemptableState
+from flexbe_core.core.topics import Topics
 from flexbe_core.logger import Logger
-from flexbe_core.proxy import ProxySubscriberCached
+
+import rclpy
+
+from std_msgs.msg import Empty
 
 
 class PreemptableStateMachine(LockableStateMachine):
@@ -53,26 +52,27 @@ class PreemptableStateMachine(LockableStateMachine):
     _preempted_name = 'preempted'
 
     def __init__(self, *args, **kwargs):
+        """Initialize instance."""
         super().__init__(*args, **kwargs)
-        # always listen to preempt so that the behavior can be stopped even if unsupervised
-        self._preempt_topic = 'flexbe/command/preempt'
-        self._sub = ProxySubscriberCached({self._preempt_topic: Empty}, inst_id=id(self))
-        self._sub.set_callback(self._preempt_topic, self._preempt_cb, inst_id=id(self))
         self._status_lock = threading.Lock()
-        self._last_deep_state_name = None
-        self._last_deep_state_path = None
+        self._last_deep_states_list = None
+        self._last_outcome = None
+
+    def _notify_start(self):
+        # always listen to preempt so that the behavior can be stopped even if unsupervised (e.g not ROS controlled via OCS)
+        self._sub.subscribe(Topics._CMD_PREEMPT_TOPIC, Empty, self._preempt_cb, inst_id=id(self))
+
+    def _notify_stop(self):
+        self._sub.unsubscribe_topic(Topics._CMD_PREEMPT_TOPIC, inst_id=id(self))
 
     def _preempt_cb(self, msg):
         if not self._is_controlled:
             Logger.localinfo(f'Preempting {self.name}!')
             PreemptableState.preempt = True
 
-    def on_stop(self):
-        # No other SM classes have on_stop, so no call to super().on_stop
-        self._sub.unsubscribe_topic(self._preempt_topic, inst_id=id(self))
-
     @staticmethod
     def add(label, state, transitions=None, remapping=None):
+        """Add state to SM."""
         transitions[PreemptableState._preempted_name] = PreemptableStateMachine._preempted_name
         LockableStateMachine.add(label, state, transitions, remapping)
 
@@ -81,32 +81,32 @@ class PreemptableStateMachine(LockableStateMachine):
         return super()._valid_targets + [PreemptableStateMachine._preempted_name]
 
     def spin(self, userdata=None):
+        """Spin the execute loop for preemptable portion."""
         outcome = None
         while rclpy.ok():
             outcome = self.execute(userdata)
 
             # Store the information for safely passing to heartbeat thread
-            deep_state = self.get_deep_state()
-            if deep_state:
-                if deep_state.name != self._last_deep_state_name:
-                    with self._status_lock:
-                        self._last_deep_state_path = str(deep_state.path)
-                        self._last_deep_state_name = str(deep_state.name)
-            else:
-                if self._last_deep_state_name is not None:
-                    with self._status_lock:
-                        self._last_deep_state_path = None
-                        self._last_deep_state_name = None
+            deep_states = self.get_deep_states()
+            assert isinstance(deep_states, list), f'Expecting a list here, not {deep_states}'
+            if deep_states != self._last_deep_states_list:
+                # Logger.localinfo(f"New deep states for '{self.name}' len={len(deep_states)} "
+                #                  f'deep states: {[dpst.path for dpst in deep_states if dpst is not None]}')
+                with self._status_lock:
+                    self._last_deep_states_list = deep_states
+            # else:
+            #     Logger.localinfo(f"Same old deep states for '{self.name}' len={len(deep_states)} - "
+            #                      f'deep states: {[dpst.name for dpst in deep_states]}')
 
             if self._inner_sync_request:
                 # Top-level state machine with sync request
                 self.process_sync_request()
 
             if outcome is not None:
-                Logger.loginfo(f"PreemptableStateMachine {self.name} spin() - done with outcome={outcome}")
+                Logger.loginfo(f"PreemptableStateMachine '{self.name}' spin() - done with outcome={outcome}")
                 break
 
-            self.sleep()
+            self.wait(seconds=self.sleep_duration)
 
         return outcome
 
@@ -116,17 +116,10 @@ class PreemptableStateMachine(LockableStateMachine):
 
           Note: Mirror uses derived version that cleans up mirror paths
         """
-        with self._status_lock:
-            path = self._last_deep_state_path
-
-        msg = BehaviorSync()
-        msg.behavior_id = -1
-        if path is not None:
-            msg.current_state_checksum = zlib.adler32(path.encode()) & 0x7fffffff
-        else:
-            msg.current_state_checksum = -1
-        return msg
+        raise NotImplementedError('Do not call this version directly - '
+                                  'either OperatableStateMachine or Mirror should override')
 
     @classmethod
     def process_sync_request(cls):
-        Logger.localinfo("Ignoring PreemptableState process_sync_request")
+        """Process sync request (ignored here - should be handled by derived state)."""
+        Logger.localinfo('Ignoring PreemptableState process_sync_request')

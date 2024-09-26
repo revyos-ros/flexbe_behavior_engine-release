@@ -1,14 +1,27 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_states
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+3.0.3 (2024-06-06)
+------------------
 
-2.3.5 (2024-05-31)
+3.0.2 (2024-06-04)
+------------------
+* flake8/pycodestyle cleanup
+
+3.0.1 (2024-05-31)
 ------------------
 * use onboard heartbeat to trigger launcher
-* add command line argument to allow quicker startup
 * clean up tabs in subscriber state
+* tweak UI message
 * Merge pull request #19 from AravindaDP/iron
   * Add qos parameter to SubscriberState
+
+3.0.0 (2024-05-01)
+------------------
+* update with state map and changes to concurrent handling
+* allow removing action clients and service callers
+* add options to remove service callers and action clients
+* flake8, pep257 and codestyle checks
 
 2.3.4 (2024-05-01)
 ------------------
@@ -16,9 +29,6 @@ Changelog for package flexbe_states
 2.3.3 (2023-08-09)
 ------------------
 * cleanup
-* destroy sub/pub/client in executor thread
-* use SingleThreadedExecutor without callback groups
-* use basic pub/sub for onboard; cleanup
 
 2.3.2 (2023-08-01)
 ------------------
@@ -37,7 +47,7 @@ Changelog for package flexbe_states
 ------------------
 * add input_action_server with UI and update handling inside input_state
   * WARNING: This change to input_state.py may require changes to how data is being sent
-* add timeout and use wait duration to action client calls
+* use wait duration with proxy action client and add timeout
 * Updates to dependencies for ROS build farm
 
 2.2.0 (2023-06-29)

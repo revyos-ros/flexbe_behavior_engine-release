@@ -1,10 +1,24 @@
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Changelog for package flexbe_onboard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-2.3.5 (2024-05-31)
+3.0.3 (2024-06-06)
 ------------------
-* update change log
+
+3.0.2 (2024-06-04)
+------------------
+* flake8/pycodestyle cleanup
+
+3.0.1 (2024-05-31)
+------------------
+* use onboard heartbeat to trigger launcher
+* clean up tabs in subscriber state
+* tweak UI message
+
+3.0.0 (2024-05-01)
+------------------
+* update with state map and changes to concurrent handling
+* allow removing action clients and service callers
+* support for new state id and concurrency handling
 
 2.3.4 (2024-05-01)
 ------------------
