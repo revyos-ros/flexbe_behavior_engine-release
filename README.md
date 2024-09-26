@@ -1,3 +1,35 @@
+## flexbe_behavior_engine (jazzy) - 3.0.3-2
+
+The packages in the `flexbe_behavior_engine` repository were released into the `jazzy` distro by running `/home/z572/gits/revyos-ros/venv2/bin/bloom-release -r jazzy flexbe_behavior_engine --override-release-repository-push-url git@github.com:revyos-ros/flexbe_behavior_engine-release.git` on `Thu, 26 Sep 2024 08:49:04 -0000`
+
+These packages were released:
+- `flexbe_behavior_engine`
+- `flexbe_core`
+- `flexbe_input`
+- `flexbe_mirror`
+- `flexbe_msgs`
+- `flexbe_onboard`
+- `flexbe_states`
+- `flexbe_testing`
+- `flexbe_widget`
+
+Version of package(s) in repository `flexbe_behavior_engine`:
+
+- upstream repository: https://github.com/FlexBE/flexbe_behavior_engine.git
+- release repository: https://github.com/revyos-ros/flexbe_behavior_engine-release.git
+- rosdistro version: `3.0.3-1`
+- old version: `3.0.3-1`
+- new version: `3.0.3-2`
+
+Versions of tools used:
+
+- bloom version: `0.12.0`
+- catkin_pkg version: `1.0.0`
+- rosdep version: `0.22.2`
+- rosdistro version: `0.9.0`
+- vcstools version: `0.1.42`
+
+
 ## flexbe_behavior_engine (jazzy) - 3.0.3-1
 
 The packages in the `flexbe_behavior_engine` repository were released into the `jazzy` distro by running `/usr/local/bin/bloom-release --new-track --track jazzy --rosdistro jazzy flexbe_behavior_engine` on `Thu, 06 Jun 2024 18:41:11 -0000`
